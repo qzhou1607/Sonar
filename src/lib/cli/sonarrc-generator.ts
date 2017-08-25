@@ -16,6 +16,7 @@ import { debug as d } from '../utils/debug';
 import { IConfig, IRuleBuilder } from '../types'; // eslint-disable-line no-unused-vars
 import * as logger from '../utils/logging';
 import * as resourceLoader from '../utils/resource-loader';
+import { generateBrowserslistConfig } from './browserslist-generator';
 
 const debug = d(__filename);
 
@@ -35,7 +36,7 @@ export const initSonarrc = async () => {
     const rules = resourceLoader.loadRules(rulesConfig);
 
     const sonarConfig = {
-        browserslist: '',
+        browserslist: [],
         connector: {
             name: '',
             options: { waitFor: 1000 }
@@ -118,6 +119,8 @@ export const initSonarrc = async () => {
             }
         });
     }
+
+    sonarConfig.browserslist = await generateBrowserslistConfig();
 
     const filePath = path.join(process.cwd(), '.sonarrc');
 
