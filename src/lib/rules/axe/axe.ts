@@ -11,7 +11,7 @@ import { AxeResults, Result as AxeResult, NodeResult as AxeNodeResult } from 'ax
 
 import { readFileAsync } from '../../utils/misc';
 import { debug as d } from '../../utils/debug';
-import { IAsyncHTMLElement, ITraverseEnd, IRule, IRuleBuilder, Severity } from '../../types'; // eslint-disable-line no-unused-vars
+import { IAsyncHTMLElement, IRule, IRuleBuilder, Severity, ITraverseStart } from '../../types'; // eslint-disable-line no-unused-vars
 import { RuleContext } from '../../rule-context'; // eslint-disable-line no-unused-vars
 
 const debug = d(__filename);
@@ -52,8 +52,8 @@ const rule: IRuleBuilder = {
             return elements[0];
         };
 
-        const validate = async (traverseEnd: ITraverseEnd) => {
-            const { resource } = traverseEnd;
+        const validate = async (traverseStart: ITraverseStart) => {
+            const { resource } = traverseStart;
             const axeCore: string = await readFileAsync(require.resolve('axe-core'));
             const script: string = `(function () {
     ${axeCore};
@@ -104,7 +104,7 @@ const rule: IRuleBuilder = {
 
         loadRuleConfig();
 
-        return { 'traverse::end': validate };
+        return { 'traverse::start': validate };
     },
     meta: {
         docs: {
